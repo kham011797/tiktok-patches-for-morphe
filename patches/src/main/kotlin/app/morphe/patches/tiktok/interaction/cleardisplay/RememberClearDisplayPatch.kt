@@ -28,7 +28,102 @@ val rememberClearDisplayPatch = bytecodePatch(
         ClearModeLogPlaytimeFingerprint.methodOrNull?.returnEarly()
 
 
-        AutoScrollAssemBaseVisibilityFingerprint.method.let { method ->
+        
+        BaseAutoScrollUiEpFingerprint.method.let { method ->
+            val instructions = method.implementation!!.instructions
+
+            val showCallIndex = instructions.indexOfFirst { instruction ->
+                val reference =
+                    (instruction as? ReferenceInstruction)?.reference as? MethodReference
+
+                reference?.definingClass == "LX/0UUp;" &&
+                    reference.name == "LJLLLL" &&
+                    reference.returnType == "V"
+            }
+
+            check(showCallIndex >= 0) {
+                "Base Auto Scroll Ep visibility call was not found"
+            }
+
+            val showCall =
+                instructions.elementAt(showCallIndex) as Instruction35c
+            val visibilityRegister = showCall.registerC
+
+            method.addInstruction(
+                showCallIndex,
+                "const/16 v$visibilityRegister, 0x8",
+            )
+
+            method.addInstruction(
+                showCallIndex + 2,
+                "const/4 v$visibilityRegister, 0x0",
+            )
+        }
+
+        BaseAutoScrollUiOpFingerprint.method.let { method ->
+            val instructions = method.implementation!!.instructions
+
+            val showCallIndex = instructions.indexOfFirst { instruction ->
+                val reference =
+                    (instruction as? ReferenceInstruction)?.reference as? MethodReference
+
+                reference?.definingClass == "LX/0UUp;" &&
+                    reference.name == "LJLLLL" &&
+                    reference.returnType == "V"
+            }
+
+            check(showCallIndex >= 0) {
+                "Base Auto Scroll Op visibility call was not found"
+            }
+
+            val showCall =
+                instructions.elementAt(showCallIndex) as Instruction35c
+            val visibilityRegister = showCall.registerC
+
+            method.addInstruction(
+                showCallIndex,
+                "const/16 v$visibilityRegister, 0x8",
+            )
+
+            method.addInstruction(
+                showCallIndex + 2,
+                "const/4 v$visibilityRegister, 0x0",
+            )
+        }
+
+        BaseAutoScrollUiQpFingerprint.method.let { method ->
+            val instructions = method.implementation!!.instructions
+
+            val showCallIndex = instructions.indexOfFirst { instruction ->
+                val reference =
+                    (instruction as? ReferenceInstruction)?.reference as? MethodReference
+
+                reference?.definingClass == "LX/0UUp;" &&
+                    reference.name == "LJLLLL" &&
+                    reference.returnType == "V"
+            }
+
+            check(showCallIndex >= 0) {
+                "Base Auto Scroll Qp visibility call was not found"
+            }
+
+            val showCall =
+                instructions.elementAt(showCallIndex) as Instruction35c
+            val visibilityRegister = showCall.registerC
+
+            method.addInstruction(
+                showCallIndex,
+                "const/16 v$visibilityRegister, 0x8",
+            )
+
+            // Qp reuses this register later, so restore TikTok's original zero.
+            method.addInstruction(
+                showCallIndex + 2,
+                "const/4 v$visibilityRegister, 0x0",
+            )
+        }
+
+AutoScrollAssemBaseVisibilityFingerprint.method.let { method ->
             val instructions = method.implementation!!.instructions
 
             val showCallIndex = instructions.indexOfFirst { instruction ->

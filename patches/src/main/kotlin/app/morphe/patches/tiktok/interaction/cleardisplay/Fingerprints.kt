@@ -8,6 +8,34 @@ import app.morphe.patcher.Fingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
 
 
+
+internal object BaseAutoScrollUiEpFingerprint : Fingerprint(
+    returnType = "V",
+    parameters = listOf("Z"),
+    custom = { method, classDef ->
+        classDef.endsWith("/BaseAutoScrollUIComponent;") &&
+            method.name == "Ep"
+    },
+)
+
+internal object BaseAutoScrollUiOpFingerprint : Fingerprint(
+    returnType = "V",
+    parameters = emptyList(),
+    custom = { method, classDef ->
+        classDef.endsWith("/BaseAutoScrollUIComponent;") &&
+            method.name == "Op"
+    },
+)
+
+internal object BaseAutoScrollUiQpFingerprint : Fingerprint(
+    returnType = "V",
+    parameters = emptyList(),
+    custom = { method, classDef ->
+        classDef.endsWith("/BaseAutoScrollUIComponent;") &&
+            method.name == "Qp"
+    },
+)
+
 internal object AutoScrollAssemBaseVisibilityFingerprint : Fingerprint(
     returnType = "V",
     parameters = listOf(
