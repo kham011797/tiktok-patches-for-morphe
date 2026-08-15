@@ -42,7 +42,7 @@ val rememberClearDisplayPatch = bytecodePatch(
 
                     const/4 v2, 0x0
                     const-string v3, ""
-                    const-string v4, "long_press"
+                    const-string v4, ""
 
                     new-instance v0, $eventClass
                     invoke-direct {v0, v1, v2, v3, v4}, $eventClass-><init>(ZILjava/lang/String;Ljava/lang/String;)V
