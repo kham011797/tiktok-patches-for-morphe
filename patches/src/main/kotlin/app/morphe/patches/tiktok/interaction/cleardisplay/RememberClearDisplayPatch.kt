@@ -40,13 +40,19 @@ val rememberClearDisplayPatch = bytecodePatch(
 
                     if-eqz v1, :clear_display_disabled
 
-                    const/4 v2, 0x3
+                    const/4 v2, 0x0
                     const-string v3, ""
                     const-string v4, "long_press"
 
                     new-instance v0, $eventClass
                     invoke-direct {v0, v1, v2, v3, v4}, $eventClass-><init>(ZILjava/lang/String;Ljava/lang/String;)V
                     invoke-virtual {v0}, $eventClass->post()Lcom/ss/android/ugc/governance/eventbus/IEvent;
+
+                const/16 v2, 0x9
+
+                new-instance v0, $eventClass
+                invoke-direct {v0, v1, v2, v3, v4}, $eventClass-><init>(ZILjava/lang/String;Ljava/lang/String;)V
+                invoke-virtual {v0}, $eventClass->post()Lcom/ss/android/ugc/governance/eventbus/IEvent;
 
                     :clear_display_disabled
                     nop
