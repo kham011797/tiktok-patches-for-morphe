@@ -8,6 +8,14 @@ import app.morphe.patcher.Fingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
 
 
+
+internal object AutoScrollSwitchFingerprint : Fingerprint(
+    custom = { method, classDef ->
+        classDef.endsWith("/AutoScrollSwitchAssem;") &&
+            method.name == "onViewCreated"
+    },
+)
+
 internal object AutoScrollButtonNoTextFingerprint : Fingerprint(
     custom = { method, classDef ->
         classDef.endsWith("/AutoScrollButtonAssemV2NoText;") &&

@@ -28,7 +28,16 @@ val rememberClearDisplayPatch = bytecodePatch(
         ClearModeLogPlaytimeFingerprint.methodOrNull?.returnEarly()
 
 
-        AutoScrollButtonNoTextFingerprint.method.let { method ->
+        
+        AutoScrollSwitchFingerprint.method.addInstructions(
+            0,
+            """
+                const/16 v0, 0x8
+                invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
+            """,
+        )
+
+AutoScrollButtonNoTextFingerprint.method.let { method ->
             val instructions = method.implementation!!.instructions
 
             val visibilityCallIndex = instructions.indexOfFirst { instruction ->
