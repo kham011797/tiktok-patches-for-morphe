@@ -9,6 +9,21 @@ import com.android.tools.smali.dexlib2.AccessFlags
 
 
 
+
+internal object AutoScrollButtonFingerprint : Fingerprint(
+    custom = { method, classDef ->
+        classDef.endsWith("/AutoScrollButtonAssem;") &&
+            method.name == "onViewCreated"
+    },
+)
+
+internal object AutoScrollButtonV2Fingerprint : Fingerprint(
+    custom = { method, classDef ->
+        classDef.endsWith("/AutoScrollButtonAssemV2;") &&
+            method.name == "onViewCreated"
+    },
+)
+
 internal object AutoScrollSwitchFingerprint : Fingerprint(
     custom = { method, classDef ->
         classDef.endsWith("/AutoScrollSwitchAssem;") &&

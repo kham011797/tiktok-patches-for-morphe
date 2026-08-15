@@ -37,7 +37,58 @@ val rememberClearDisplayPatch = bytecodePatch(
             """,
         )
 
-AutoScrollButtonNoTextFingerprint.method.let { method ->
+
+        AutoScrollButtonFingerprint.method.let { method ->
+            val instructions = method.implementation!!.instructions
+
+            val visibilityCallIndex = instructions.indexOfFirst { instruction ->
+                val reference =
+                    (instruction as? ReferenceInstruction)?.reference as? MethodReference
+
+                reference?.definingClass == "LX/0UUp;" &&
+                    reference.name == "LJLZ" &&
+                    reference.returnType == "V"
+            }
+
+            check(visibilityCallIndex >= 0) {
+                "AutoScrollButtonAssem visibility call was not found"
+            }
+
+            val visibilityCall =
+                instructions.elementAt(visibilityCallIndex) as Instruction35c
+
+            method.addInstruction(
+                visibilityCallIndex,
+                "const/16 v${visibilityCall.registerC}, 0x8",
+            )
+        }
+
+        AutoScrollButtonV2Fingerprint.method.let { method ->
+            val instructions = method.implementation!!.instructions
+
+            val visibilityCallIndex = instructions.indexOfFirst { instruction ->
+                val reference =
+                    (instruction as? ReferenceInstruction)?.reference as? MethodReference
+
+                reference?.definingClass == "LX/0UUp;" &&
+                    reference.name == "LJLZ" &&
+                    reference.returnType == "V"
+            }
+
+            check(visibilityCallIndex >= 0) {
+                "AutoScrollButtonAssemV2 visibility call was not found"
+            }
+
+            val visibilityCall =
+                instructions.elementAt(visibilityCallIndex) as Instruction35c
+
+            method.addInstruction(
+                visibilityCallIndex,
+                "const/16 v${visibilityCall.registerC}, 0x8",
+            )
+        }
+
+        AutoScrollButtonNoTextFingerprint.method.let { method ->
             val instructions = method.implementation!!.instructions
 
             val visibilityCallIndex = instructions.indexOfFirst { instruction ->
