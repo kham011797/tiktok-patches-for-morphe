@@ -9,9 +9,9 @@ import app.morphe.patcher.extensions.InstructionExtensions.addInstruction
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.util.returnEarly
-import com.android.tools.smali.dexlib2.iface.reference.MethodReference
-import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction35c
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction35c
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
 @Suppress("unused")
 val rememberClearDisplayPatch = bytecodePatch(
@@ -28,88 +28,28 @@ val rememberClearDisplayPatch = bytecodePatch(
         ClearModeLogPlaytimeFingerprint.methodOrNull?.returnEarly()
 
 
-        
-        AutoScrollSwitchFingerprint.method.addInstructions(
-            0,
-            """
-                const/16 v0, 0x8
-                invoke-virtual {p1, v0}, Landroid/view/View;->setVisibility(I)V
-            """,
-        )
-
-
-        AutoScrollButtonFingerprint.method.let { method ->
+        AutoScrollAssemBaseVisibilityFingerprint.method.let { method ->
             val instructions = method.implementation!!.instructions
 
-            val visibilityCallIndex = instructions.indexOfFirst { instruction ->
+            val showCallIndex = instructions.indexOfFirst { instruction ->
                 val reference =
                     (instruction as? ReferenceInstruction)?.reference as? MethodReference
 
                 reference?.definingClass == "LX/0UUp;" &&
-                    reference.name == "LJLZ" &&
+                    reference.name == "LJLLLL" &&
                     reference.returnType == "V"
             }
 
-            check(visibilityCallIndex >= 0) {
-                "AutoScrollButtonAssem visibility call was not found"
+            check(showCallIndex >= 0) {
+                "Auto Scroll shared visibility call was not found"
             }
 
-            val visibilityCall =
-                instructions.elementAt(visibilityCallIndex) as Instruction35c
+            val showCall =
+                instructions.elementAt(showCallIndex) as Instruction35c
 
             method.addInstruction(
-                visibilityCallIndex,
-                "const/16 v${visibilityCall.registerC}, 0x8",
-            )
-        }
-
-        AutoScrollButtonV2Fingerprint.method.let { method ->
-            val instructions = method.implementation!!.instructions
-
-            val visibilityCallIndex = instructions.indexOfFirst { instruction ->
-                val reference =
-                    (instruction as? ReferenceInstruction)?.reference as? MethodReference
-
-                reference?.definingClass == "LX/0UUp;" &&
-                    reference.name == "LJLZ" &&
-                    reference.returnType == "V"
-            }
-
-            check(visibilityCallIndex >= 0) {
-                "AutoScrollButtonAssemV2 visibility call was not found"
-            }
-
-            val visibilityCall =
-                instructions.elementAt(visibilityCallIndex) as Instruction35c
-
-            method.addInstruction(
-                visibilityCallIndex,
-                "const/16 v${visibilityCall.registerC}, 0x8",
-            )
-        }
-
-        AutoScrollButtonNoTextFingerprint.method.let { method ->
-            val instructions = method.implementation!!.instructions
-
-            val visibilityCallIndex = instructions.indexOfFirst { instruction ->
-                val reference =
-                    (instruction as? ReferenceInstruction)?.reference as? MethodReference
-
-                reference?.definingClass == "LX/0UUp;" &&
-                    reference.name == "LJLZ" &&
-                    reference.returnType == "V"
-            }
-
-            check(visibilityCallIndex >= 0) {
-                "Auto Scroll icon visibility call was not found"
-            }
-
-            val visibilityCall =
-                instructions.elementAt(visibilityCallIndex) as Instruction35c
-
-            method.addInstruction(
-                visibilityCallIndex,
-                "const/16 v${visibilityCall.registerC}, 0x8",
+                showCallIndex,
+                "const/16 v${showCall.registerC}, 0x8",
             )
         }
 

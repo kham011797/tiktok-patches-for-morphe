@@ -2,7 +2,7 @@ group = "app.morphe"
 
 patches {
     about {
-        name = "Khalid TikTok Test 6"
+        name = "Khalid TikTok Test 7"
         description = "Metra patches for TikTok 46.2.3, built for Morphe."
         source = "https://github.com/icysymmetra/tiktok-patches-for-morphe"
         author = "icysymmetra"
