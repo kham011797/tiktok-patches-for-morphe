@@ -5,9 +5,13 @@
 package app.morphe.patches.tiktok.interaction.cleardisplay
 
 import app.morphe.patches.shared.compat.AppCompatibilities
+import app.morphe.patcher.extensions.InstructionExtensions.addInstruction
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.util.returnEarly
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction35c
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
 
 @Suppress("unused")
 val rememberClearDisplayPatch = bytecodePatch(
@@ -22,6 +26,32 @@ val rememberClearDisplayPatch = bytecodePatch(
         ClearModeLogCoreFingerprint.methodOrNull?.returnEarly()
         ClearModeLogStateFingerprint.methodOrNull?.returnEarly()
         ClearModeLogPlaytimeFingerprint.methodOrNull?.returnEarly()
+
+
+        AutoScrollButtonNoTextFingerprint.method.let { method ->
+            val instructions = method.implementation!!.instructions
+
+            val visibilityCallIndex = instructions.indexOfFirst { instruction ->
+                val reference =
+                    (instruction as? ReferenceInstruction)?.reference as? MethodReference
+
+                reference?.definingClass == "LX/0UUp;" &&
+                    reference.name == "LJLZ" &&
+                    reference.returnType == "V"
+            }
+
+            check(visibilityCallIndex >= 0) {
+                "Auto Scroll icon visibility call was not found"
+            }
+
+            val visibilityCall =
+                instructions.elementAt(visibilityCallIndex) as Instruction35c
+
+            method.addInstruction(
+                visibilityCallIndex,
+                "const/16 v${visibilityCall.registerC}, 0x8",
+            )
+        }
 
         OnClearDisplayEventFingerprint.method.let { method ->
             val eventClass = method.parameters[0].type
@@ -47,12 +77,6 @@ val rememberClearDisplayPatch = bytecodePatch(
                     new-instance v0, $eventClass
                     invoke-direct {v0, v1, v2, v3, v4}, $eventClass-><init>(ZILjava/lang/String;Ljava/lang/String;)V
                     invoke-virtual {v0}, $eventClass->post()Lcom/ss/android/ugc/governance/eventbus/IEvent;
-
-                const/16 v2, 0x9
-
-                new-instance v0, $eventClass
-                invoke-direct {v0, v1, v2, v3, v4}, $eventClass-><init>(ZILjava/lang/String;Ljava/lang/String;)V
-                invoke-virtual {v0}, $eventClass->post()Lcom/ss/android/ugc/governance/eventbus/IEvent;
 
                     :clear_display_disabled
                     nop

@@ -7,6 +7,14 @@ package app.morphe.patches.tiktok.interaction.cleardisplay
 import app.morphe.patcher.Fingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
 
+
+internal object AutoScrollButtonNoTextFingerprint : Fingerprint(
+    custom = { method, classDef ->
+        classDef.endsWith("/AutoScrollButtonAssemV2NoText;") &&
+            method.name == "onViewCreated"
+    },
+)
+
 internal object OnClearDisplayEventFingerprint : Fingerprint(
     custom = { method, classDef ->
         classDef.endsWith("/ClearModePanelComponent;") && method.name == "onClearModeEvent"
